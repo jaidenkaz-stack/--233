@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Чат с фото</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #f0f2f5;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      height: 100vh;
+    }
+    .chat-box {
+      flex: 1;
+      padding: 10px;
+      overflow-y: auto;
+      background: #fff;
+      border-bottom: 1px solid #ddd;
+    }
+    .message {
+      background: #e1ffc7;
+      padding: 8px 12px;
+      border-radius: 12px;
+      margin: 6px 0;
+      max-width: 70%;
+      word-wrap: break-word;
+    }
+    .message img {
+      max-width: 200px;
+      border-radius: 10px;
+      margin-top: 5px;
+    }
+    .chat-input {
+      display: flex;
+      padding: 10px;
+      background: #f9f9f9;
+      border-top: 1px solid #ddd;
+      align-items: center;
+    }
+    .chat-input input[type="text"] {
+      flex: 1;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      outline: none;
+    }
+    .chat-input input[type="file"] {
+      display: none;
+    }
+    .chat-input label {
+      margin-left: 10px;
+      padding: 10px 16px;
+      background: #28a745;
+      color: white;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+    .chat-input button {
+      margin-left: 10px;
+      padding: 10px 16px;
+      border: none;
+      border-radius: 8px;
+      background: #007bff;
+      color: white;
+      cursor: pointer;
+    }
+    .chat-input button:hover {
+      background: #0056b3;
+    }
+    .chat-input label:hover {
+      background: #218838;
+    }
+  </style>
+</head>
+<body>
+  <div class="chat-box" id="chatBox"></div>
+
+  <div class="chat-input">
+    <input type="text" id="messageInput" placeholder="Введите сообщение...">
+    <input type="file" id="imageInput" accept="image/*">
+    <label for="imageInput">📷 Фото</label>
+    <button onclick="sendMessage()">Отправить</button>
+  </div>
+
+  <script>
+    const chatBox = document.getElementById('chatBox');
+    const input = document.getElementById('messageInput');
+    const imageInput = document.getElementById('imageInput');
+
+    function sendMessage() {
+      const text = input.value.trim();
+      if (text !== "") {
+        const message = document.createElement('div');
+        message.className = "message";
+        message.innerText = text;
+        chatBox.appendChild(message);
+        chatBox.scrollTop = chatBox.scrollHeight;
+        input.value = "";
+      }
+    }
+
+    // Отправка по Enter
+    input.addEventListener("keydown", function(e) {
+      if (e.key === "Enter") sendMessage();
+    });
+
+    // Загрузка и отправка фото
+    imageInput.addEventListener("change", function() {
+      const file = this.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          const message = document.createElement('div');
+          message.className = "message";
+          const img = document.createElement('img');
+          img.src = e.target.result;
+          message.appendChild(img);
+          chatBox.appendChild(message);
+          chatBox.scrollTop = chatBox.scrollHeight;
+        };
+        reader.readAsDataURL(file);
+      }
+    });
+  </script>
+</body>
+</html>
+
